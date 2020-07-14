@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+
+export interface Range {
+  min: number;
+  max: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesNumbersService {
-  private subject = new Subject();
-  numbers$ = this.subject.asObservable();
+  private range: Subject<Range> = new Subject();
+  range$ = this.range.asObservable();
 
-  dispatch(numbers) {
-    this.subject.next(numbers);
+  updateRange(range) {
+    this.range.next(range);
   }
 }

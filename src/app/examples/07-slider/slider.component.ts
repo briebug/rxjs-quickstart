@@ -5,6 +5,9 @@ import { Observable } from 'rxjs';
 import { filter, map, pairwise, startWith, tap } from 'rxjs/operators';
 import { SalesNumbersService } from '../../shared/services';
 
+const MIN = 'min';
+const MAX = 'max';
+
 @Component({
   selector: 'app-slider',
   styles: [`
@@ -44,7 +47,9 @@ export class SliderComponent implements OnInit {
   startMax = 55;
   step = 1;
 
-  constructor(private builder: FormBuilder, private salesNumbers: SalesNumbersService) {
+  constructor(
+    private builder: FormBuilder,
+    private salesNumbers: SalesNumbersService) {
   }
 
   ngOnInit() {
@@ -64,7 +69,7 @@ export class SliderComponent implements OnInit {
         pairwise(),
         filter(([oldVal, newVal]) => this.filterMinMaxValues(oldVal, newVal)),
         map(([oldVal, newVal]) => newVal),
-        tap(values => this.salesNumbers.dispatch(values))
+        tap(range => this.salesNumbers.updateRange(range))
       );
 
     this.minValue = valueStream
@@ -84,10 +89,10 @@ export class SliderComponent implements OnInit {
     let isValid = true;
     if (oldVal.min !== newVal.min && newVal.min > newVal.max) {
       isValid = false;
-      (<FormControl>this.myForm.controls['max']).setValue(newVal.min);
+      (this.myForm.controls[MAX] as FormControl).setValue(newVal.min);
     } else if (oldVal.max !== newVal.max && newVal.max < newVal.min) {
       isValid = false;
-      (<FormControl>this.myForm.controls['min']).setValue(newVal.max);
+      (this.myForm.controls[MIN] as FormControl).setValue(newVal.max);
     }
     return isValid;
   }

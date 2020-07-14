@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SalesNumbersService } from '../../shared/services';
+import { Observable } from 'rxjs';
+import { Range, SalesNumbersService } from '../../shared/services';
 
 @Component({
   selector: 'app-sales-widget',
@@ -23,25 +24,25 @@ import { SalesNumbersService } from '../../shared/services';
         <h3>Sell: {{ maxValue | currency}}</h3>
       </mat-card>
 
-      <mat-card *ngIf="numbers$ | async as numbers">
+      <mat-card *ngIf="range$ | async as range">
         <h1>Sales Numbers</h1>
-        <h3>Buy: {{ numbers.min | currency}}</h3>
-        <h3>Sell: {{ numbers.max | currency}}</h3>
+        <h3>Buy: {{ range.min | currency}}</h3>
+        <h3>Sell: {{ range.max | currency}}</h3>
       </mat-card>
     </div>
   `
 })
 export class SalesWidgetComponent implements OnInit {
-  numbers$;
+  range$: Observable<Range>;
   minValue;
   maxValue;
 
   constructor(private salesNumbers: SalesNumbersService) {
-    this.numbers$ = salesNumbers.numbers$;
+    this.range$ = salesNumbers.range$;
   }
 
   ngOnInit() {
-    this.salesNumbers.numbers$
+    this.salesNumbers.range$
       .subscribe(({min, max}) => {
         this.minValue = min;
         this.maxValue = max;
