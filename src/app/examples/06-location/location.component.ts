@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { TweenMax } from 'gsap';
+import * as $ from 'jquery';
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as $ from 'jquery';
-import { TweenMax } from 'gsap';
+
+const PIN_OFFSET_X = 40;
+const PIN_OFFSET_Y = 60;
 
 @Component({
   selector: 'app-location',
@@ -40,23 +43,19 @@ import { TweenMax } from 'gsap';
 export class LocationComponent implements OnInit {
   @ViewChild('pin') pin;
 
-  constructor() {
-  }
-
   ngOnInit() {
-    const PIN_OFFSET_X = 50;
-    const PIN_OFFSET_Y = 75;
-
     fromEvent(document, 'click')
       .pipe(
-        map((event: MouseEvent) => {
-          const offset = $(event.target).offset();
-          return {
-            x: event.clientX - offset.left - PIN_OFFSET_X,
-            y: event.clientY - offset.top - PIN_OFFSET_Y
-          };
-        })
+        map((e: MouseEvent) => this.generatePosition(e))
       )
-      .subscribe(props => TweenMax.to(this.pin.nativeElement, 1, props));
+      .subscribe(position => TweenMax.to(this.pin.nativeElement, 1, position));
+  }
+
+  generatePosition(e: MouseEvent) {
+    const offset = $(e.target).offset();
+    return {
+      x: e.clientX - offset.left - PIN_OFFSET_X,
+      y: e.pageY - offset.top - PIN_OFFSET_Y
+    };
   }
 }

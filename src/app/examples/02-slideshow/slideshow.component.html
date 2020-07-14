@@ -8,8 +8,8 @@
       <div *ngFor="let image of images; let i = index">
         <div
           class="slide"
-          *ngIf="i === currentIndex"
-          [@imageChange]="currentDirection"
+          *ngIf="i === currentPosition.index"
+          [@imageChange]="currentPosition.direction"
           [style.background-image]="'url(' + image + ')'"
         ></div>
       </div>

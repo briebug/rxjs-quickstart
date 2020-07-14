@@ -43,22 +43,26 @@ export class MapComponent implements OnInit {
   lines: Line[] = [];
 
   ngOnInit() {
-    fromEvent(document, 'click')
-      .pipe(
-        map((event: MouseEvent) => {
-          const offset = $(event.target).offset();
-          return {
-            x: event.clientX - offset.left,
-            y: event.clientY - offset.top
-          };
-        }),
-        pairwise(),
-        map(positions => {
-          const p1 = positions[0];
-          const p2 = positions[1];
-          return {x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y};
-        }),
-      )
-      .subscribe(line => this.lines = [...this.lines, line]);
+    // CHALLENGE
+    // Create a stream to capture clicks on the document
+    // Map the MouseEvent to an appropriate position object
+    // Identify and implement the operator needed to draw a straight line
+    // Hints have been given to help keep you focused
+
+    // HINT: to tranasform the MouseEvent use this.generatePosition(e)
+    // HINT: to transferm the pairwise result use
+    //  this.generateCoordinates(positions[0], positions[1])
+  }
+
+  generatePosition(e: MouseEvent) {
+    const offset = $(e.target).offset();
+    return {
+      x: e.clientX - offset.left,
+      y: e.pageY - offset.top
+    };
+  }
+
+  generateCoordinates(start, end): Line {
+    return { x1: start.x, y1: start.y, x2: end.x, y2: end.y };
   }
 }
