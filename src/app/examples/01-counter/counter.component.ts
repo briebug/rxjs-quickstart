@@ -41,16 +41,9 @@ export class CounterComponent implements AfterViewInit {
   @ViewChild('btn') btn;
   count = 0;
 
-  constructor() {
-  }
-
   ngAfterViewInit() {
-    fromEvent(this.getNativeElement(this.btn), 'click')
-      .pipe(
-        startWith({ticker: 0}),
-        scan((acc: Ticker, curr) => ({ticker: acc.ticker + 1}))
-      )
-      .subscribe(result => this.count = result.ticker);
+    // CHALLENGE
+    // Capture the btn click and increment count by 1
   }
 
   getNativeElement(element) {

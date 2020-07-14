@@ -6,7 +6,9 @@ import { map } from 'rxjs/internal/operators';
   selector: 'app-input',
   template: `
     <mat-form-field class="search">
-      <input name="search" [formControl]="searchControl" type="search" matInput placeholder="Search Query">
+      <input name="search"
+        [formControl]="searchControl" type="search"
+        matInput placeholder="Search Query">
     </mat-form-field>
     <h3>{{queryString}}</h3>
   `,
@@ -23,13 +25,10 @@ export class InputComponent implements OnInit {
   queryString;
 
   ngOnInit() {
-    this.searchControl
-      .valueChanges
-      .pipe(
-        map(query => query.toUpperCase())
-      )
-      .subscribe(query => {
-        this.queryString = query;
-      });
+    // CHALLENGE
+    // Capture the searchControl output and input it into queryString
+    // Map the output to all uppercase letters
+    // Reverse the output i.e. Lukas becomes sakuL
+    // BONUS How would you URL encode the output?
   }
 }
