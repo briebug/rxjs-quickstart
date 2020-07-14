@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { Observable } from 'rxjs';
 import { filter, map, pairwise, startWith, tap } from 'rxjs/operators';
-import { SalesNumbersService } from '../../shared/services';
+import { Range, SalesNumbersService } from '../../shared/services';
 
 const MIN = 'min';
 const MAX = 'max';
@@ -60,12 +60,7 @@ export class SliderComponent implements OnInit {
 
     const valueStream = this.myForm.valueChanges
       .pipe(
-        map(val => {
-          return {
-            min: parseFloat(val.min),
-            max: parseFloat(val.max)
-          };
-        }),
+        map(val => this.parseRange(val)),
         pairwise(),
         filter(([oldVal, newVal]) => this.filterMinMaxValues(oldVal, newVal)),
         map(([oldVal, newVal]) => newVal),
@@ -83,6 +78,13 @@ export class SliderComponent implements OnInit {
         map(vals => vals.max),
         startWith(this.startMax)
       );
+  }
+
+  parseRange(val): Range {
+    return {
+      min: parseFloat(val.min),
+      max: parseFloat(val.max)
+    };
   }
 
   filterMinMaxValues(oldVal, newVal) {
