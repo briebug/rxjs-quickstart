@@ -47,7 +47,7 @@ export class MapComponent implements OnInit {
       .pipe(
         map((e: MouseEvent) => this.generatePosition(e)),
         pairwise(),
-        map((positions) => this.generateCoordinates(positions[0], positions[1]))
+        map(([oldPos, newPos]) => this.generateCoordinates(oldPos, newPos))
       )
       .subscribe((line) => (this.lines = [...this.lines, line]));
   }

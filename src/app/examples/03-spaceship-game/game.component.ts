@@ -77,12 +77,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.leftArrow$ = fromEvent(document, 'keydown').pipe(
       filter((event: KeyboardEvent) => event.key === 'ArrowLeft'),
-      mapTo((position) => this.decrement(position, 'x', 10))
+      mapTo(position => this.decrement(position, 'x', 10))
     );
 
     this.rightArrow$ = fromEvent(document, 'keydown').pipe(
       filter((event: KeyboardEvent) => event.key === 'ArrowRight'),
-      mapTo((position) => this.increment(position, 'x', 10))
+      mapTo(position => this.increment(position, 'x', 10))
     );
 
     merge(this.leftArrow$, this.rightArrow$)
@@ -90,7 +90,7 @@ export class GameComponent implements OnInit, OnDestroy {
         startWith(this.shipPosition),
         scan((acc, curr: Function) => curr(acc))
       )
-      .subscribe((position) => (this.shipPosition = position));
+      .subscribe(position => this.shipPosition = position);
   }
 
   ngOnDestroy() {

@@ -51,7 +51,7 @@ export class AnnotateComponent implements OnInit {
         .pipe(
           map((e: MouseEvent) => this.generatePosition(e)),
           pairwise(),
-          map(positions => this.generateCoordinates(positions[0], positions[1])),
+          map(([oldPos, newPos]) => this.generateCoordinates(oldPos, newPos)),
           takeUntil(mouseUp$)
         )))
       .subscribe((line: any) => this.lines = [...this.lines, line]);
