@@ -42,18 +42,23 @@ export class SlideshowComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     // NOTE: The reason we are keeping track of direction is so that animations work
+    const previous$ = fromEvent(this.getNativeElement(this.previous), 'click').pipe(
+      map(event => ({ shift: -1, direction: Direction.right }))
+    );
 
-    // CHALLENGE PART ONE
-    // Create a previous$ stream to capture the previous button click
-    // Create a next$ stream to capture the next button click
-    // Return a Target object that looks like this {shift: -1, direction: 'right'}
+    const next$ = fromEvent(this.getNativeElement(this.next), 'click').pipe(
+      map(event => ({ shift: 1, direction: Direction.left }))
+    );
 
-    // CHALLENGE PART TWO
-    // Combine both streams to update the same slideshow
-    // Use startWith to set the initial value to this.currentPosition
-    // Use the scan method to calculate the adjusted index and return a Position object
-    // HINT: this.getAdjustedIndex(acc.index, value.shift)
-    // Update the slideshow to use the new Position object
+    merge(previous$, next$)
+      .pipe(
+        startWith(this.currentPosition),
+        scan((acc: Position, value: Move) => {
+          const adjustedIndex = this.getAdjustedIndex(acc.index, value.shift);
+          return { index: adjustedIndex, direction: value.direction };
+        })
+      )
+      .subscribe((position: Position) => (this.currentPosition = position));
   }
 
   getAdjustedIndex(current, shift) {

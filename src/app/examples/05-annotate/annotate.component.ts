@@ -42,13 +42,19 @@ export class AnnotateComponent implements OnInit {
   lines: Line[] = [];
 
   ngOnInit() {
-    // CHALLENGE
-    // Think about the event sequence involved with drawing a line
-    // Create and sequence the streams to model that interaction
+    const mouseDown$ = fromEvent(document, 'mousedown');
+    const mouseMove$ = fromEvent(document, 'mousemove');
+    const mouseUp$ = fromEvent(document, 'mouseup');
 
-    // HINT: to tranasform the MouseEvent use this.generatePosition(e)
-    // HINT: to transferm the pairwise result use
-    //  this.generateCoordinates(positions[0], positions[1])
+    mouseDown$
+      .pipe(switchMap(event => mouseMove$
+        .pipe(
+          map((e: MouseEvent) => this.generatePosition(e)),
+          pairwise(),
+          map(positions => this.generateCoordinates(positions[0], positions[1])),
+          takeUntil(mouseUp$)
+        )))
+      .subscribe((line: any) => this.lines = [...this.lines, line]);
   }
 
   generatePosition(e: MouseEvent) {

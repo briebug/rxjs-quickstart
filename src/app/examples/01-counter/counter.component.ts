@@ -2,10 +2,6 @@ import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { fromEvent } from 'rxjs/index';
 import { scan, startWith } from 'rxjs/operators';
 
-interface Ticker {
-  ticker: number;
-}
-
 @Component({
   selector: 'app-counter',
   styles: [`
@@ -42,8 +38,12 @@ export class CounterComponent implements AfterViewInit {
   count = 0;
 
   ngAfterViewInit() {
-    // CHALLENGE
-    // Capture the btn click and increment count by 1
+    fromEvent(this.getNativeElement(this.btn), 'click')
+      .pipe(
+        startWith(this.count),
+        scan((acc: number, value) => acc + 1)
+      )
+      .subscribe(count => this.count = count);
   }
 
   getNativeElement(element) {
