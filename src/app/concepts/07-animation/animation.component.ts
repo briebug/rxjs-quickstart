@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import * as $ from 'jquery';
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as $ from 'jquery';
+
+const BALL_OFFSET = 25;
 
 @Component({
   selector: 'app-animation',
@@ -19,18 +21,18 @@ export class AnimationComponent implements OnInit {
   circles: any[] = [];
 
   ngOnInit() {
-    const BALL_OFFSET = 25;
-
     fromEvent(document, 'mousemove')
       .pipe(
-        map((event: MouseEvent) => {
-          const offset = $(event.target).offset();
-          return {
-            x: event.clientX - offset.left - BALL_OFFSET,
-            y: event.pageY - BALL_OFFSET
-          };
-        })
+        map((e: MouseEvent) => this.generatePosition(e))
       )
       .subscribe(circle => this.circles = [...this.circles, circle]);
+  }
+
+  generatePosition(e: MouseEvent) {
+    const offset = $(e.target).offset();
+    return {
+      x: e.clientX - offset.left - BALL_OFFSET,
+      y: e.pageY - offset.top - BALL_OFFSET
+    };
   }
 }
