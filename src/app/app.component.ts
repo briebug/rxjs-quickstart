@@ -34,9 +34,7 @@ export class AppComponent implements OnInit {
   constructor(private snackbar: MatSnackBar, private ns: NotificationService) {}
 
   ngOnInit() {
-    this.ns.notifications$.subscribe((notification) =>
-      this.showNotification(notification)
-    );
+    this.ns.notifications$.subscribe(notification => this.showNotification(notification));
   }
 
   showNotification(notification) {

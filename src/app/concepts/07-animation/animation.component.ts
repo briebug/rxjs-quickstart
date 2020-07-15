@@ -1,16 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
-import { fromEvent } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { fromEvent, Observable } from 'rxjs';
+import { map, scan } from 'rxjs/operators';
 
 const BALL_OFFSET = 25;
+
+interface Circle {
+  x: number;
+  y: number;
+}
 
 @Component({
   selector: 'app-animation',
   template: `
   <div class="container">
     <app-circle
-      *ngFor="let circle of circles"
+      *ngFor="let circle of circles$ | async"
       [style.left]="circle.x + 'px'"
       [style.top]="circle.y + 'px'">
     </app-circle>
@@ -18,14 +23,14 @@ const BALL_OFFSET = 25;
   `
 })
 export class AnimationComponent implements OnInit {
-  circles: any[] = [];
+  circles$: Observable<Circle[]>;
 
   ngOnInit() {
-    fromEvent(document, 'mousemove')
+    this.circles$ = fromEvent(document, 'mousemove')
       .pipe(
-        map((e: MouseEvent) => this.generatePosition(e))
-      )
-      .subscribe(circle => this.circles = [...this.circles, circle]);
+        map((e: MouseEvent) => this.generatePosition(e)),
+        scan((acc: Circle[], value: Circle) => [...acc, value], [])
+      );
   }
 
   generatePosition(e: MouseEvent) {
